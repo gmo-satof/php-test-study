@@ -59,17 +59,7 @@ if [ ! -f "jenkins-cli.jar" ]; then
 fi
 
 curl -sSL https://updates.jenkins-ci.org/update-center.json | sed '1d;$d' | curl -sS -X POST -H 'Accept: application/json' -d @- http://localhost:8080/updateCenter/byId/default/postBack > /dev/null
-plugins=`java -jar jenkins-cli.jar -s http://localhost:8080 list-plugins`
-array=("checkstyle" "cloverphp" "crap4j" "dry" "htmlpublisher" "jdepend" "plot" "pmd" "violations" "warnings" "xunit" "git")
-i=0
-for e in ${array[@]}; do
-  if [ "`echo ${plugins} | grep ${e}`" == "" ]; then
-    java -jar jenkins-cli.jar -s http://localhost:8080 install-plugin "${e}"
-  else
-    echo "jankins-plugin ${e} is already installed"
-  fi
-  let i++
-done
+java -jar jenkins-cli.jar -s http://localhost:8080 install-plugin checkstyle cloverphp crap4j dry htmlpublisher jdepend plot pmd violations warnings xunit git
 
 if [ "`java -jar jenkins-cli.jar -s http://localhost:8080 list-jobs | grep triangle`" = "" ]; then
   #curl -sSL https://raw.githubusercontent.com/sebastianbergmann/php-jenkins-template/master/config.xml | java -jar jenkins-cli.jar -s http://localhost:8080 create-job triangle
